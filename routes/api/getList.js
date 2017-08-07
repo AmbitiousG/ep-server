@@ -12,9 +12,11 @@ data.push({
 });
 
 /* get list. */
-router.post('/api/getList', function(req, res, next) {
-  // res.json(data);
-  res.json({});
+router.post('/getList', function(req, res) {
+  var client = req.app.client;
+  client.hgetall('item', (err, obj) => {
+    res.json(obj);
+  })
   // next();
 });
 

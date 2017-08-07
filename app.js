@@ -7,11 +7,15 @@ var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
-var getList = require('./routes/getList');
+var getList = require('./routes/api/getList');
 
 var history = require('connect-history-api-fallback');
 
 var app = express();
+
+//set redis client
+var client = require('./db/client');
+app.set('client', client);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -33,7 +37,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/users', users);
-app.use('/api/getList', getList);
+app.use('/api', getList);
+
+// app.post('/api/getList', (req, res) => {
+//   res.send('api/getList')
+// })
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
