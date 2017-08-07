@@ -1,0 +1,1 @@
+screen -S "ep-server" bash -c 'npm run start'
