@@ -5,18 +5,17 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var index = require('./routes/index');
-var users = require('./routes/users');
-var getList = require('./routes/api/getList');
-var saveItem = require('./routes/api/saveItem');
+// var index = require('./routes/index');
+// var users = require('./routes/users');
+var arrApi = require('./routes/api');
 
 var history = require('connect-history-api-fallback');
 
 var app = express();
 
-//set redis client
-var client = require('./db/client');
-app.set('client', client);
+//set mysql pool
+var pool = require('./db/pool');
+app.set('mysql_pool', pool);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -36,10 +35,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', index);
-app.use('/users', users);
-app.use('/api', getList);
-app.use('/api', saveItem);
+// app.use('/', index);
+// app.use('/users', users);
+app.use('/api', arrApi);
 
 // app.post('/api/getList', (req, res) => {
 //   res.send('api/getList')
