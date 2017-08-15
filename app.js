@@ -4,10 +4,16 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var session = require('express-session');
+var jwt = require('jsonwebtoken');
+var ex_jwt = require('express-jwt');
+var jwt_UnauthorizedError = require('express-jwt').UnauthorizedError;
+var secretkey = require('./utils/auth').secretkey;
 
 // var index = require('./routes/index');
 // var users = require('./routes/users');
 var arrApi = require('./routes/api');
+var login = require('./routes/login');
 
 var history = require('connect-history-api-fallback');
 
@@ -35,9 +41,19 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// app.use('/', index);
-// app.use('/users', users);
-app.use('/api', arrApi);
+// app.use(session({
+//   secret: 'xinxin-rainbow',
+//   cookie: {maxAge: 60*1000*30},
+//   resave: true,
+//   saveUninitialized: false,
+// }));
+
+const authCheck = ex_jwt({
+  secret: secretkey,
+});
+
+app.use('/api', authCheck, arrApi);
+app.use('/login', login);
 
 // app.post('/api/getList', (req, res) => {
 //   res.send('api/getList')
@@ -58,6 +74,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
+  // console.log(err);
   res.render('error');
 });
 
