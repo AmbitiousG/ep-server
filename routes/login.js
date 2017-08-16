@@ -2,25 +2,35 @@ var express = require('express');
 var router = express.Router();
 var jwt = require('jsonwebtoken');
 var secretkey = require('../utils/auth').secretkey;
+var sodium = require('libsodium-wrappers');
+var query_str = require('../db/query_str');
 
-/* GET home page. */
-router.post('*', function(req, res, next) {
+router.post('/login', function(req, res, next) {
   var {username, password} = req.body;
-  if(username == 'admin' && password == '1'){
-    var tokenData = {
-      username,
-      id: 1,
-    };
-    res.json({
-      username,
-      token: jwt.sign(tokenData, secretkey)
-    });
-  }
-  else{
-    res.json({
-      error: 'invalid username or password!'
-    })
-  }
+  var isValid = false;
+  var sql = 'SELECT UserID, Password, Salt FROM Users WHERE UserName = ?';
+  var paras = [username];
+  query_str(req.app, sql, paras, (results, fields) => {
+    var records = results;
+    if(records.length > 0){
+      var {UserID, Password, Salt} = records[0];
+      var hashedPW = sodium.crypto_hash(Salt + password, 'hex');
+      if(Password == hashedPW) {//pass validation
+        isValid = true;
+        var tokenData = {
+          username,
+          id: UserID,
+        };
+        var token = jwt.sign(tokenData, secretkey);
+        res.json({username, token});
+      }
+    }
+    if(!isValid){
+      res.json({
+        error: 'invalid username or password!'
+      })
+    }
+  })
 });
 
 module.exports = router;

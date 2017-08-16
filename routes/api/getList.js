@@ -7,8 +7,8 @@ var moment = require('moment');
 /* get list. */
 router.post('/getList', function(req, res) {
   var data = req.body;
-  var userID = 1;
-  var paras = [userID];
+  var user = req.user;
+  var paras = [user.id];
   paras.push(-1);//CategoryID
   paras.push(-1);//RecordType
   paras.push('');//pFrom

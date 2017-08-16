@@ -5,8 +5,8 @@ var moment = require('moment');
 var _ = require('lodash');
 
 router.post('/save', (req, res, next) => {
-  var userID = 1;
-  var paras = [userID];
+  var user = req.user;
+  var paras = [user.id];
   var ret = {
     Success: false,
     Error: '',

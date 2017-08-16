@@ -4,8 +4,8 @@ var query_sp = require('../../db/query_sp');
 
 router.post('/deleteRecord', (req, res, next) => {
   var data = req.body;
-  var userID = 1;
-  var paras = [userID];
+  var user = req.user;
+  var spParas = [user.id];
   paras.push(data.recordID);
   query_sp(req.app, 'usp_DeleteRecord', paras, (results, fields) => {
     res.json({

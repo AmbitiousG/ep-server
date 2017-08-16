@@ -14,6 +14,7 @@ var secretkey = require('./utils/auth').secretkey;
 // var users = require('./routes/users');
 var arrApi = require('./routes/api');
 var login = require('./routes/login');
+var register = require('./routes/register');
 
 var history = require('connect-history-api-fallback');
 
@@ -53,7 +54,7 @@ const authCheck = ex_jwt({
 });
 
 app.use('/api', authCheck, arrApi);
-app.use('/login', login);
+app.use('/login', [login, register]);
 
 // app.post('/api/getList', (req, res) => {
 //   res.send('api/getList')
