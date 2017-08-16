@@ -7,8 +7,9 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var jwt = require('jsonwebtoken');
 var ex_jwt = require('express-jwt');
-var jwt_UnauthorizedError = require('express-jwt').UnauthorizedError;
+// var jwt_UnauthorizedError = require('express-jwt').UnauthorizedError;
 var secretkey = require('./utils/auth').secretkey;
+var errorCodeNotLogin = require('./utils/auth').errorCodeNotLogin;
 
 // var index = require('./routes/index');
 // var users = require('./routes/users');
@@ -74,9 +75,16 @@ app.use(function(err, req, res, next) {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
-  res.status(err.status || 500);
-  // console.log(err);
-  res.render('error');
+  if(err.status == 401){
+    res.json({
+      errorCode: errorCodeNotLogin,
+      error: 'not logged in'
+    })
+  }
+  else{
+    res.status(err.status || 500);
+    res.render('error');
+  }
 });
 
 module.exports = app;

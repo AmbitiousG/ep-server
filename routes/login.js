@@ -19,9 +19,11 @@ router.post('/login', function(req, res, next) {
         isValid = true;
         var tokenData = {
           username,
-          id: UserID,
+          id: UserID
         };
-        var token = jwt.sign(tokenData, secretkey);
+        var token = jwt.sign(tokenData, secretkey, {
+          expiresIn: '3d'
+        });
         res.json({username, token});
       }
     }
