@@ -6,10 +6,10 @@ router.post('/deleteRecord', (req, res, next) => {
   var data = req.body;
   var user = req.user;
   var spParas = [user.id];
-  paras.push(data.recordID);
-  query_sp(req.app, 'usp_DeleteRecord', paras, (results, fields) => {
+  spParas.push(data.recordID);
+  query_sp(req.app, 'usp_DeleteRecord', spParas, (results, fields) => {
     res.json({
-      Success: true,
+      success: true,
       // RecordID: results[0][0].RecordID
     });
   })
